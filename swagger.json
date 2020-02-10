@@ -1,0 +1,385 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This API is to be used during development of assignments for the QUT CAB230 Web Computing Unit. If you have any issues, please comment on Slack.",
+    "version": "1.0.0",
+    "title": "CAB230 : Web Computing API"
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "tags": [
+    {
+      "name": "Authentication"
+    },
+    {
+      "name": "Search"
+    },
+    {
+      "name": "Helpers"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Registers a new user account",
+        "tags": [
+          "Authentication"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Request body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "demo-user@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "demouserpassword"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "yay! you've successfully registered your user account :)"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "oops! It looks like that user already exists :("
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login with an existing user account",
+        "tags": [
+          "Authentication"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Request body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "demo-user@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "demouserpassword"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "example": {
+                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1Nzg2LCJlbWFpbCI6ImRlbW8xMjM0QGdtYWlsLmNvbSJ9LCJpYXQiOjE1NTUzMjQ2MDIsImV4cCI6MTU1NTQxMTAwMn0.mo85iKuAQ_h8n8-6pkeNNs5CCnV0G8hScxhi_ml_Q6c",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1Nzg2LCJlbWFpbCI6ImRlbW8xMjM0QGdtYWlsLmNvbSJ9LCJpYXQiOjE1NTUzMjQ2MDIsImV4cCI6MTU1NTQxMTAwMn0.mo85iKuAQ_h8n8-6pkeNNs5CCnV0G8hScxhi_ml_Q6c",
+                "token_type": "Bearer",
+                "expires_in": 86400
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "invalid login - bad password"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "description": "Search for Offence data",
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "offence",
+            "type": "string",
+            "required": true,
+            "description": "Name of the Offence to search for"
+          },
+          {
+            "in": "query",
+            "name": "area",
+            "type": "string",
+            "description": "List of comma-separated Areas (LGAs) to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "type": "string",
+            "description": "List of comma-separated Ages to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "gender",
+            "type": "string",
+            "description": "List of comma-separated Genders to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "type": "integer",
+            "description": "List of comma-separated Years to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "type": "integer",
+            "description": "List of comma-separated Months to filter search results by (1-12)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "properties": {
+                    "offence": {
+                      "type": "string",
+                      "example": "Homicide (Murder)"
+                    }
+                  }
+                },
+                "result": {
+                  "type": "array",
+                  "items": {
+                    "example": {
+                      "LGA": "Aurukun Shire Council",
+                      "total": 4,
+                      "lat": -27.470812,
+                      "lng": 153.022455
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "oops! it looks like you're missing the offence query parm"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "oh no! it looks like your authorization token is invalid..."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offences": {
+      "get": {
+        "description": "List of offences to perform searches for",
+        "tags": [
+          "Helpers"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "offences": {
+                  "type": "array",
+                  "items": {
+                    "example": [
+                      "Advertising Prostitution",
+                      "Armed Robbery"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/areas": {
+      "get": {
+        "description": "List of Areas to filter search results by",
+        "tags": [
+          "Helpers"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "areas": {
+                  "type": "array",
+                  "items": {
+                    "example": [
+                      "Aurukun Shire Council",
+                      "Balonne Shire Council"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ages": {
+      "get": {
+        "description": "List of Ages to filter search results by",
+        "tags": [
+          "Helpers"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ages": {
+                  "type": "array",
+                  "items": {
+                    "example": [
+                      "Adult",
+                      "Juvenile"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/genders": {
+      "get": {
+        "description": "List of Genders to filter search results by",
+        "tags": [
+          "Helpers"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "genders": {
+                  "type": "array",
+                  "items": {
+                    "example": [
+                      "Female",
+                      "Male"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/years": {
+      "get": {
+        "description": "List of Years to filter search results by",
+        "tags": [
+          "Helpers"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "years": {
+                  "type": "array",
+                  "items": {
+                    "example": [
+                      2001,
+                      2002
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
